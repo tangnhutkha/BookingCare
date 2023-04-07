@@ -17,6 +17,7 @@ let initWebRoutes = (app) => {
 
     // router.use('/api/ms-user', userRouter)
     router.post('/api/login', userController.handleLogin)
+    router.use('/api/ms-user', userRouter)
 
     return app.use('/', router)
 }

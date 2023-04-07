@@ -3,6 +3,9 @@ import userController from '../controllers/userController'
 
 let router = exoress.Router()
 
-router.get('/login', userController.login)
+router.put('/edit', userController.handleEditUser)
+router.delete('/delete', userController.handleDeleteUser)
+router.post('/create', userController.handleCreateUser)
+router.get('/all-users', userController.handleGetAllUsers)
 
 module.exports = router
