@@ -108,24 +108,25 @@ let createNewUser = (data) => {
             if (emailExist) {
                 resolve({
                     errCode: 1,
-                    message: 'Email is exists'
+                    errMessage: 'Email is exists'
+                })
+            } else {
+                let hasPasswordFromBcrypt = await hasUserPasssword(data.password)
+                await db.User.create({
+                    firstName: data.firstName,
+                    lastName: data.lastName,
+                    password: hasPasswordFromBcrypt,
+                    email: data.email,
+                    address: data.address,
+                    phoneNumber: data.phoneNumber,
+                    gender: data.gender === '1' ? true : false,
+                    roleId: data.roleId,
+                })
+                resolve({
+                    errCode: 0,
+                    message: 'OK'
                 })
             }
-            let hasPasswordFromBcrypt = await hasUserPasssword(data.password)
-            await db.User.create({
-                firstName: data.firstName,
-                lastName: data.lastName,
-                password: hasPasswordFromBcrypt,
-                email: data.email,
-                address: data.address,
-                phoneNumber: data.phoneNumber,
-                gender: data.gender === '1' ? true : false,
-                roleId: data.roleId,
-            })
-            resolve({
-                errCode: 0,
-                message: 'OK'
-            })
         } catch (e) {
             reject(e)
         }
@@ -197,10 +198,34 @@ let updateUser = (data) => {
     })
 }
 
+let getAllCodes = (inputType) => {
+    return new Promise(async (resolve, reject) => {
+        try {
+
+            if (!inputType) {
+                resolve({
+                    errCode: 1,
+                    errMessage: "Missing params input type"
+                })
+            } else {
+                let res = {}
+                res = await db.Allcode.findAll({
+                    where: { type: inputType }
+                })
+                res.errCode = 0
+                res.data
+                resolve(res)
+            }
+        } catch (e) {
+            reject(e)
+        }
+    })
+}
 module.exports = {
     handleUserLogin,
     getAllUsers,
     createNewUser,
     deleteUser,
-    updateUser
+    updateUser,
+    getAllCodes
 }
