@@ -1,20 +1,17 @@
 import userService from '../services/userService'
 
-let login = (req, res) => {
-    return res.send('api login')
-}
 
 let handleLogin = async (req, res) => {
-    let email = req.body.email
+    let username = req.body.username
     let password = req.body.password
 
-    if (!email || !password) {
+    if (!username || !password) {
         return res.status(500).json({
             errCode: 1,
             errMessage: "Missinng Params"
         })
     }
-    let userData = await userService.handleUserLogin(email, password)
+    let userData = await userService.handleUserLogin(username, password)
     return res.status(200).json({
         errCode: userData.errCode,
         errMessage: userData.errMessage,
@@ -68,7 +65,11 @@ let handleGetAllCodes = async (req, res) => {
     try {
         let type = req.query.type
         let data = await userService.getAllCodes(type)
-        return res.status(200).json(data)
+        return res.status(200).json({
+            errCode: 0,
+            errMesssage: 'OK',
+            data
+        })
     } catch (e) {
         console.log('get all codes: ', e)
         return res.status(200).json({
@@ -79,7 +80,6 @@ let handleGetAllCodes = async (req, res) => {
 }
 
 module.exports = {
-    login,
     handleLogin,
     handleGetAllUsers,
     handleCreateUser,

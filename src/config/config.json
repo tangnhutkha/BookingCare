@@ -2,7 +2,7 @@
   "development": {
     "username": "root",
     "password": "Khakhavnd@123",
-    "database": "bookingcare_dev",
+    "database": "thanhdaportal_dev",
     "host": "127.0.0.1",
     "dialect": "mysql",
     "logging": false,

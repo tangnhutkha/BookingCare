@@ -12,13 +12,31 @@ module.exports = {
       firstName: {
         type: Sequelize.STRING
       },
+      middleName: {
+        type: Sequelize.STRING
+      },
       lastName: {
+        type: Sequelize.STRING
+      },
+      username: {
         type: Sequelize.STRING
       },
       password: {
         type: Sequelize.STRING
       },
       email: {
+        type: Sequelize.STRING
+      },
+      birthday: {
+        type: Sequelize.DATE
+      },
+      city: {
+        type: Sequelize.STRING
+      },
+      baptismDay: {
+        type: Sequelize.STRING
+      },
+      baptismPlace: {
         type: Sequelize.STRING
       },
       address: {
@@ -34,9 +52,6 @@ module.exports = {
         type: Sequelize.STRING
       },
       roleId: {
-        type: Sequelize.STRING
-      },
-      positionId: {
         type: Sequelize.STRING
       },
       createdAt: {

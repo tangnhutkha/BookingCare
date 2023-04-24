@@ -1,23 +1,18 @@
 import exoress from 'express'
-import homeController from '../controllers/homeController'
 import userController from '../controllers/userController'
 import userRouter from './userRouter'
+import codeRouter from './codeRouter'
 
 let router = exoress.Router()
 
 let initWebRoutes = (app) => {
 
-    router.get('/delete-crud', homeController.deleteCRUD)
-    router.post('/put-crud', homeController.putCRUD)
-    router.get('/edit-crud', homeController.editCRUD)
-    router.get('/get-crud', homeController.displayCRUD)
-    router.post('/post-crud', homeController.postCRUD)
-    router.get('/crud', homeController.getCRUD)
-    router.get('/', homeController.homePage)
-
-    // router.use('/api/ms-user', userRouter)
+    // /api/login
     router.post('/api/login', userController.handleLogin)
+    // /api/ms-user
     router.use('/api/ms-user', userRouter)
+    // /api/ms/code
+    router.use('/api/ms-code', codeRouter)
 
     return app.use('/', router)
 }

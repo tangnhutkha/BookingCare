@@ -3,17 +3,16 @@ import bcrypt from 'bcrypt'
 
 const salt = bcrypt.genSaltSync(10)
 
-let handleUserLogin = (email, password) => {
+let handleUserLogin = (username, password) => {
     return new Promise(async (resolve, reject) => {
         try {
             let userData = {}
 
-            let isExit = await checkUserEmail(email)
+            let isExit = await checkUserEmail(username)
             if (isExit) {
                 //user already exist
                 let user = await db.User.findOne({
-                    attributes: ['roleId', 'firstName', 'lastName', `email`, `password`],
-                    where: { email: email },
+                    where: { username: username },
                     raw: true
                 })
                 if (user) {
@@ -34,7 +33,7 @@ let handleUserLogin = (email, password) => {
                 }
             } else {
                 userData.errCode = 1
-                userData.errMessage = `Your's email not exist in your system`
+                userData.errMessage = `Your's username not exist in your system`
             }
             resolve(userData)
         } catch (e) {
@@ -43,15 +42,11 @@ let handleUserLogin = (email, password) => {
     })
 }
 
-let checkUserEmail = (userEmail) => {
+let checkUserEmail = (username) => {
     return new Promise(async (resolve, reject) => {
         try {
             let user = await db.User.findOne({
-                attributes: {
-                    exclude: [`password`, `posotionId`
-                    ]
-                },
-                where: { email: userEmail }
+                where: { username: username }
             })
             if (user) {
                 resolve(true)
@@ -71,14 +66,14 @@ let getAllUsers = (userId) => {
             if (userId === 'ALL') {
                 users = await db.User.findAll({
                     attributes: {
-                        exclude: [`password`, `posotionId`]
+                        exclude: [`password`]
                     }
 
                 })
             } if (userId && userId !== 'ALL') {
                 users = await db.User.findOne({
                     attributes: {
-                        exclude: [`password`, `posotionId`]
+                        exclude: [`password`]
                     },
                     where: { id: userId }
                 })
@@ -104,19 +99,25 @@ let hasUserPasssword = (password) => {
 let createNewUser = (data) => {
     return new Promise(async (resolve, reject) => {
         try {
-            let emailExist = await checkUserEmail(data.email)
+            let emailExist = await checkUserEmail(data.username)
             if (emailExist) {
                 resolve({
                     errCode: 1,
-                    errMessage: 'Email is exists'
+                    errMessage: 'Username is exists'
                 })
             } else {
                 let hasPasswordFromBcrypt = await hasUserPasssword(data.password)
                 await db.User.create({
                     firstName: data.firstName,
+                    middleName: data.middleName,
                     lastName: data.lastName,
+                    username: data.username,
                     password: hasPasswordFromBcrypt,
                     email: data.email,
+                    birthday: data.birthday,
+                    city: data.city,
+                    baptismDay: data.baptismDay,
+                    baptismPlace: data.baptismPlace,
                     address: data.address,
                     phoneNumber: data.phoneNumber,
                     gender: data.gender === '1' ? true : false,
@@ -128,6 +129,7 @@ let createNewUser = (data) => {
                 })
             }
         } catch (e) {
+            console.log('create user error: ', e)
             reject(e)
         }
     })
@@ -136,10 +138,6 @@ let createNewUser = (data) => {
 let deleteUser = (userId) => {
     return new Promise(async (resolve, reject) => {
         let user = await db.User.findOne({
-            attributes: {
-                exclude: [`password`, `posotionId`
-                ]
-            },
             where: { id: userId }
         })
         if (!user) {
@@ -170,21 +168,25 @@ let updateUser = (data) => {
             }
             let user = await db.User.findOne({
                 attributes: {
-                    exclude: [`password`, `posotionId`
-                    ]
+                    exclude: [`password`]
                 },
                 where: { id: data.id },
                 raw: false
             })
             if (user) {
                 user.firstName = data.firstName,
+                    user.middleName = data.lastName,
                     user.lastName = data.lastName,
+                    user.email = data.email,
+                    user.phoneNumber = data.phoneNumber,
+                    user.city = data.city,
                     user.address = data.address,
                     await user.save()
 
                 resolve({
                     errCode: 0,
-                    message: 'Update user succeeds'
+                    message: 'Update user succeeds',
+                    data: user
                 })
             } else {
                 resolve({

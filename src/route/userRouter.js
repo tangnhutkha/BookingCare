@@ -7,6 +7,5 @@ router.put('/edit', userController.handleEditUser)
 router.delete('/delete', userController.handleDeleteUser)
 router.post('/create', userController.handleCreateUser)
 router.get('/all-users', userController.handleGetAllUsers)
-router.get('/allcode', userController.handleGetAllCodes)
 
 module.exports = router
