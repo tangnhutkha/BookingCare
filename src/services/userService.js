@@ -121,7 +121,8 @@ let createNewUser = (data) => {
                     phoneNumber: data.phoneNumber,
                     gender: data.gender,
                     roleId: data.roleId,
-                    positionId: data.positionId
+                    positionId: data.positionId,
+                    image: data.avatar
                 })
                 resolve({
                     errCode: 0,
@@ -171,7 +172,7 @@ let updateUser = (data) => {
             }
             let user = await db.User.findOne({
                 attributes: {
-                    exclude: [`password`, `posotionId`
+                    exclude: [`password`
                     ]
                 },
                 where: { id: data.id },
@@ -185,6 +186,9 @@ let updateUser = (data) => {
                     user.positionId = data.positionId,
                     user.gender = data.gender,
                     user.phoneNumber = data.phoneNumber
+                if (data.avatar) {
+                    user.image = data.avatar
+                }
                 await user.save()
 
                 resolve({
@@ -198,6 +202,7 @@ let updateUser = (data) => {
                 })
             }
         } catch (e) {
+            console.log(e)
             reject(e)
         }
     })
