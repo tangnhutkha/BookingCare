@@ -82,7 +82,7 @@ let getDetailDoctorById = (doctorId) => {
             } else {
                 let user = await db.User.findOne({
                     attributes: {
-                        exclude: ['password', 'image']
+                        exclude: ['password',]
                     },
                     where: { id: doctorId },
                     include: [
@@ -92,9 +92,12 @@ let getDetailDoctorById = (doctorId) => {
                         },
                         { model: db.Allcode, as: 'positionData', attributes: ['valueEn', 'valueVi'] },
                     ],
-                    raw: true,
+                    raw: false,
                     nest: true
                 })
+                if (user && user.image) {
+                    user.image = new Buffer(user.image, 'base64').toString('binary')
+                }
                 if (!user) {
                     resolve({
                         errCode: -1,
